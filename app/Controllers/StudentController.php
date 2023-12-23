@@ -44,4 +44,35 @@ class StudentController extends ResourceController
         
         return $this->respond($response);
     }
+
+    public function update($id = null)
+    {
+        $model = new StudentModel();
+
+        $json = $this->request->getJSON();
+
+        $data = [
+            'name'    => $json->name,
+            'email'   => $json->email,
+            'phone'   => $json->phone,
+            'address' => $json->address,
+            // Implementar upload de fotos
+        ];
+
+        $student = $model->find($id);
+        if (!$student) {
+            return $this->failNotFound('Estudante não encontrado');
+        }
+
+        $model->update($id, $data);
+
+        $response = [
+            'status'   => 200,
+            'error'    => null,
+            'messages' => [
+                'success' => 'Dados do estudante atualizados com sucesso'
+            ]
+        ];
+        return $this->respond($response);
+    }
 }

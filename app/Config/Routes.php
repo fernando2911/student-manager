@@ -8,3 +8,4 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 $routes->get('students', 'StudentController::index', ['filter' => 'dbCheck']);
 $routes->post('student/create', 'StudentController::create', ['filter' => 'dbCheck']);
+$routes->put('student/update/(:segment)', 'StudentController::update/$1', ['filter' => 'dbCheck']);
