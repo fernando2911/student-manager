@@ -75,4 +75,20 @@ class StudentController extends ResourceController
         ];
         return $this->respond($response);
     }
+
+    public function delete($id = null)
+    {
+        $model = new StudentModel();
+
+        $student = $model->find($id);
+        if (!$student) {
+            return $this->failNotFound('Estudante não encontrado com o ID: ' . $id);
+        }
+
+        if ($model->delete($id)) {
+            return $this->respondDeleted(['message' => 'Estudante excluído com sucesso']);
+        } else {
+            return $this->failServerError('Erro ao excluir o estudante');
+        }
+    }
 }
