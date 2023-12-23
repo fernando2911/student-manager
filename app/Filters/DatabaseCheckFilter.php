@@ -6,6 +6,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\API\ResponseTrait;
 use App\Services\DatabaseService;
+use CodeIgniter\Config\Services;
 
 
 class DatabaseCheckFilter implements FilterInterface
@@ -18,13 +19,17 @@ class DatabaseCheckFilter implements FilterInterface
         $checkConnection = $dbService->checkConnection();
 
         if ($checkConnection !== true) {
-            $response = service('response');
-            $response->setStatusCode(($checkConnection === 'access_denied') ? 403 : 500);
-
-            return $response->setContentType('application/json')
-                            ->setBody(json_encode(['error' => ($checkConnection === 'access_denied') 
-                            ? 'Acesso ao banco de dados negado.' 
-                            : 'Erro ao conectar ao banco de dados.']));
+            $errorMessage = ($checkConnection === 'access_denied') ? 
+                'Acesso ao banco de dados negado.' : 
+                'Erro ao conectar ao banco de dados.';
+            $statusCode = ($checkConnection === 'access_denied') ? 403 : 500;
+            return Services::response()->setStatusCode($statusCode)->setJSON([
+                "status" => $statusCode,
+                "error" => $statusCode,
+                "messages" => [
+                    "error" => $errorMessage
+                ]
+            ]);
         }
     }
 
