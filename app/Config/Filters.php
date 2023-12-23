@@ -2,6 +2,8 @@
 
 namespace Config;
 
+use App\Filters\DatabaseCheckFilter;
+use App\Filters\JwtFilter;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
@@ -25,7 +27,11 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'dbCheck' => \App\Filters\DatabaseCheckFilter::class,
+        'dbCheck'       => DatabaseCheckFilter::class,
+        'dbCheckAndJwt'   => [
+            DatabaseCheckFilter::class,
+            JwtFilter::class,
+        ],
     ];
 
     /**
@@ -36,11 +42,6 @@ class Filters extends BaseConfig
      * @phpstan-var array<string, list<string>>|array<string, array<string, array<string, string>>>
      */
     public array $globals = [
-        'dbCheck' => [
-            'before' => [
-                'student/*',
-            ],
-        ],
         'before' => [
             // 'honeypot',
             // 'csrf',
