@@ -10,8 +10,8 @@ class UserAdminSeeder extends Seeder
     {
         $data = [
             'username' => 'admin',
-            'email'    => 'admin@example.com',
-            'password' => password_hash('4)f;c&JE', PASSWORD_DEFAULT),
+            'email'    => 'admin@delta.com.br',
+            'password' => password_hash('123456', PASSWORD_DEFAULT),
         ];
 
         $this->db->table('users')->insert($data);
