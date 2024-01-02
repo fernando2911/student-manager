@@ -14,7 +14,7 @@ $routes->group('api', function($routes) {
     
     $routes->group('student', ['filter' => 'dbCheckAndJwt'], function($routes) {
         $routes->post('create', 'StudentController::create');
-        $routes->put('update/(:segment)', 'StudentController::update/$1');
+        $routes->post('update/(:segment)', 'StudentController::update/$1');
     });
 
     $routes->delete('students/(:num)', 'StudentController::delete/$1', ['filter' => 'dbCheckAndJwt']);

@@ -20,26 +20,39 @@ class StudentController extends ResourceController
 
     public function create()
     {
-        $json = $this->request->getJSON();
+        $request = \Config\Services::request();
 
         $model = new StudentModel();
 
         $data = [
-            'name'    => $json->name,
-            'email'   => $json->email,
-            'phone'   => $json->phone,
-            'address' => $json->address,
-            // Implementar upload de fotos
+            'name' => $request->getPost('name'),
+            'email' => $request->getPost('email'),
+            'phone' => $request->getPost('phone'),
+            'address' => $request->getPost('address'),
         ];
 
-        $model->insert($data);
+        $studentId = $model->insert($data);
+
+        $file = $this->request->getFile('photo');
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $studentId . '.' . $file->getExtension();
+            $file->move(ROOTPATH . 'public/uploads/students', $newName);
+            $userData['photo'] = $newName;
+            $this->model->update($studentId, ['photo' => $newName]);
+        }
+
+        if (!$studentId) {
+            return $this->fail($this->model->errors(), 400);
+        }
 
         $response = [
             'status'   => 201,
             'error'    => null,
             'messages' => [
                 'success' => 'Estudante criado com sucesso'
-            ]
+            ],
+            'studentId' => $studentId
         ];
         
         return $this->respond($response);
@@ -47,32 +60,34 @@ class StudentController extends ResourceController
 
     public function update($id = null)
     {
+        helper(['form', 'url']);
+
         $model = new StudentModel();
 
-        $json = $this->request->getJSON();
-
         $data = [
-            'name'    => $json->name,
-            'email'   => $json->email,
-            'phone'   => $json->phone,
-            'address' => $json->address,
-            // Implementar upload de fotos
+            'name' => $this->request->getPost('name'),
+            'email' => $this->request->getPost('email'),
+            'phone' => $this->request->getPost('phone'),
+            'address' => $this->request->getPost('address'),
         ];
 
-        $student = $model->find($id);
-        if (!$student) {
-            return $this->failNotFound('Estudante não encontrado');
-        }
-
         $model->update($id, $data);
+
+        $file = $this->request->getFile('photo');
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            $newName = $id . '.' . $file->getExtension();
+            $file->move(ROOTPATH . 'public/uploads/students', $newName);
+            $model->update($id, ['photo' => $newName]);
+        }
 
         $response = [
             'status'   => 200,
             'error'    => null,
             'messages' => [
-                'success' => 'Dados do estudante atualizados com sucesso'
+                'success' => 'Estudante atualizado com sucesso'
             ]
         ];
+
         return $this->respond($response);
     }
 
