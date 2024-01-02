@@ -32,6 +32,7 @@ class Filters extends BaseConfig
             DatabaseCheckFilter::class,
             JwtFilter::class,
         ],
+        'cors'     => \Fluent\Cors\Filters\CorsFilter::class,
     ];
 
     /**
@@ -46,11 +47,16 @@ class Filters extends BaseConfig
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'cors'
         ],
         'after' => [
             'toolbar',
             // 'honeypot',
             // 'secureheaders',
+        ],
+        'cors' => [
+            'before' => ['api/*'],
+            'after' => ['api/*']
         ],
     ];
 
@@ -74,5 +80,7 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+        'cors' => ['after' => ['api/*']]
+    ];
 }
