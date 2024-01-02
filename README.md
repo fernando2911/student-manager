@@ -22,7 +22,7 @@ php spark migrate
 Rode os seeders:
 ```
 php spark db:seed UserAdminSeeder
-```
+
 php spark db:seed StudentSeeder
 ```
 
